@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+  <title>Starter Template - Materialize</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="./static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <link href="./static/css2/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+</head>
+
+<body>
+
+
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <br><br>
+      <div class="row center">
+        <img src="https://ir.iitr.ac.in/EventsAbroad/images/resource/IITR-175-logo.jpg" height="250px" width="250px">
+        <h1 class="orange-text">Inventory Managment</h1>
+      </div>
+
+      <div class="row center">
+        <h5 class="header col s12 light">Prediction of Demand
+          <br>
+        </h5>
+      </div>
+
+      <div class="row">
+        <form action='/predict' method="post" class="col s12">
+          <div class="row">
+            <div class="input-field col s4">
+              <label for="first_name"><b>Month</b></label>
+              <br>
+              <input placeholder="Needs to be between 1-4" name="Temperature" id="first_name" type="text" class="validate">
+            </div>
+            <!-- <div class="input-field col s4">
+
+              <label for="last_name"><b> Demand_mean </b></label>
+              <br>
+              <input id="last_name" name="Oxygen" type="text" class="validate">
+
+            </div> -->
+
+            <div class="input-field col s4">
+
+              <label for="last_name1"><b>Demand_sd </b></label>
+              <br>
+              <input placeholder="must be integer" id="last_name1" name="Demand_sd" type="text" class="validate">
+
+            </div>
+
+            <div class="input-field col s4">
+              <label for="_name"><b>Lead_time_max</b></label>
+              <br>
+              <input placeholder="must be integer" id="_name" name="Lead_time_max" type="text" class="validate">
+
+            </div>
+
+            <div class="input-field col s4">
+              <label for="_name2"><b>Lead_time_min</b></label>
+              <br>
+              <input placeholder="must be integer" id="_name2" name="Lead_time_min" type="text" class="validate">
+
+            </div>
+
+          </div>
+
+          <div class="row center">
+
+            <button type="submit" class="btn-large waves-effect waves-light orange">Economic Order Quantity</button>
+          </div>
+        </form>
+      </div>
+
+      <br>
+      {{pred}}<br>
+
+    </div>
+  </div>
+
+
+  <br><br>
+  </div>
+  </div>>
+
+  <footer class="page-footer orange">
+    <div class="container">
+      <div class="row">
+        <div class="col l6 s12">
+          <h5 class="white-text">Group 30</h5>
+          <p class="grey-text text-lighten-4">We are a team of college students working on this project of Inventory Managment.</p>
+
+
+        </div>
+        <div class="col l3 s12">
+          <h5 class="white-text">Team Members</h5>
+          <ul>
+            <li><a class="white-text" href="#!">Vivek Lahole</a></li>
+            <li><a class="white-text" href="#!">Satvik Bhardwaj</a></li>
+            <li><a class="white-text" href="#!">Yashwin Tapdiya</a></li>
+            <li><a class="white-text" href="#!">Aryan Chauhan</a></li>
+            <li><a class="white-text" href="#!">Arpan Goel</a></li>
+          </ul>
+        </div>
+        <div class="col l3 s12">
+          <h5 class="white-text">Enrollment Number</h5>
+          <ul>
+            <li><a class="white-text" href="#!">20119055</a></li>
+            <li><a class="white-text" href="#!">20119047</a></li>
+            <li><a class="white-text" href="#!">20119057</a></li>
+            <li><a class="white-text" href="#!">20119011</a></li>
+            <li><a class="white-text" href="#!">20119010</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+        Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src=".js/materialize.js"></script>
+  <script src="js/init.js"></script>
+
+</body>
+
+</html>
