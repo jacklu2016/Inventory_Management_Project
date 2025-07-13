@@ -5,7 +5,7 @@ import random
 
 app = Flask(__name__)
 
-model=pickle.load(open('model.pkl','rb'))
+#model=pickle.load(open('model.pkl','rb'))
 
 arr=[2927.9375457565484,3055.8750915130963,3183.8126372696447,3311.750183026193]
 
@@ -36,7 +36,7 @@ def predict():
 
     if not 0<asl<100: #data validation on ASL
         while kk == 0:
-            Print("required service level has to be between 0 to 100")
+            print("required service level has to be between 0 to 100")
             asl = float(input("What is the required service level (e.g. 95.0) : "))
             if not 0<asl<100:
                 kk=0
