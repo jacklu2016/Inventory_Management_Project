@@ -30,6 +30,7 @@ def predict():
     lead_time_max = int_features[2]
     lead_time_min = int_features[3]
 
+    #service level 服务满足率
     asl =95
 
     kk =0
