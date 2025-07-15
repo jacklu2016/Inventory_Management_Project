@@ -2,6 +2,7 @@ from flask import Flask,request, url_for, redirect, render_template
 import pickle
 import numpy as np
 import random
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -20,13 +21,18 @@ def predict():
 
     int_features=[int(x) for x in request.form.values()]
     final=[np.array(int_features)]
-    print(int_features[2])
+    #print(int_features[2])
     
     days =int_features[0]
-    demand_mean = arr[days-1]/30
+    print(f'days:{days}')
+    #demand_mean = arr[days-1]/30
     # print(df[1][0])
     # demand_mean=101.8625
     demand_sd = int_features[1]
+
+    salesweekly = pd.read_csv('salesweekly.csv')
+    demands = salesweekly['M01AB']
+
     lead_time_max = int_features[2]
     lead_time_min = int_features[3]
 
@@ -46,7 +52,9 @@ def predict():
 
 
     days = days + 2*lead_time_max      # adding extra days to stabilise the simulation
-    days2 = days*2                     
+    days2 = days*2
+    print(f'days:{days},days2:{days2}')
+    inv_capacity = 100
 
     def stoch_inv_sim(X): #Stochastic model defined as a function called stoch_inv_sim([Order qty, Reorder point])
         
@@ -56,7 +64,7 @@ def predict():
             tot_demand =0
             tot_sales=0
             
-            a = [max(0,np.random.normal(demand_mean,demand_sd,1)) for i in range(days)] #Generating a random Demand
+            #a = [max(0,np.random.normal(demand_mean,demand_sd,1)) for i in range(days)] #Generating a random Demand
             stkout_count = 0
             inv =[]                 # array to store daily inventory
             pip_inv=[]
@@ -77,8 +85,9 @@ def predict():
                     in_inv = in_qty[i]              #incoming inventory on i'th day
                     stock_open = beg_inv + in_inv
 
-                demand = a[i]                     #calling demand of i'th day from demand array a
-                
+                #demand = a[i]                     #calling demand of i'th day from demand array a
+                demand = demands[i]
+
                 lead_time = random.randint(lead_time_min,lead_time_max)    #lead time of replenishment
                 
                 if demand < stock_open:
@@ -86,8 +95,6 @@ def predict():
                 else:
                     end_inv = 0
                 inv.append(0.5*stock_open+0.5*end_inv)     #storing the average of opening stock and ending inventory as cycle inventory
-                
-                
                     
                 if i==0:
                     pipeline_inv = 0
@@ -108,8 +115,8 @@ def predict():
                 cycle_inv = cycle_inv + inv[n]              #calculating the averge cycle inventory
             cycle_inv = cycle_inv/len(inv)
             
-            if tot_sales*100/(tot_demand+0.000001) <asl:
-                aa = cycle_inv+10000000*demand_mean*(tot_demand-tot_sales)  #Imposing a penatly when ASL is not met the requirement            
+            if tot_sales*100/(tot_demand+0.000001) < asl:
+                aa = cycle_inv + 0.5 * (tot_demand-tot_sales)  #Imposing a penatly when ASL is not met the requirement
             else:
                 aa = cycle_inv
                 
@@ -129,15 +136,16 @@ def predict():
 
     from geneticalgorithm import geneticalgorithm as ga
 
-    varbound=np.array([[0,demand_mean*lead_time_max*5]]*2)
+    #varbound = np.array([[0,demand_mean*lead_time_max*5]]*2)
+    varbound = np.array([[0, inv_capacity]] * 2)
 
     algorithm_param = {'max_num_iteration': 1000,
-                    'population_size':15,
-                    'mutation_probability':0.1,
-                    'elit_ratio': 0.01,
-                    'crossover_probability': 0.5,
-                    'parents_portion': 0.3,
-                    'crossover_type':'uniform',
+                    'population_size':15, #种群大小
+                    'mutation_probability':0.1, #变异概率
+                    'elit_ratio': 0.01, #精英保留比率
+                    'crossover_probability': 0.8, #交叉概率
+                    'parents_portion': 0.3, #父代选择比率
+                    'crossover_type':'uniform',#交叉方式
                     'max_iteration_without_improv':200}
 
     model=ga(function=stoch_inv_sim,dimension=2,variable_type='real',variable_boundaries=varbound,algorithm_parameters=algorithm_param)
