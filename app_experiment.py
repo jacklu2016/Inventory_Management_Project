@@ -128,7 +128,7 @@ def experiment_ga():
     algorithm_param = {'max_num_iteration': 1000,
                     'population_size':15,
                     'mutation_probability':0.1,
-                    'elit_ratio': 0.01,
+                    'elit_ratio': 0.05,
                     'crossover_probability': 0.5,
                     'parents_portion': 0.3,
                     'crossover_type':'uniform',
@@ -136,18 +136,19 @@ def experiment_ga():
 
     experiment_stores = [3,5,8,10]
     experiment_stores_best_result_param_indexs = []
-    experiment_params = [{'population_size': 80, 'mutation_probability':0.1, 'crossover_probability': 0.5},
-                         {'population_size': 100, 'mutation_probability':0.1, 'crossover_probability': 0.5},
-                         {'population_size': 80, 'mutation_probability':0.05, 'crossover_probability': 0.5},
-                         {'population_size': 100, 'mutation_probability':0.05, 'crossover_probability': 0.5},
-                         {'population_size': 80, 'mutation_probability': 0.1, 'crossover_probability': 0.6},
-                         {'population_size': 100, 'mutation_probability': 0.1, 'crossover_probability': 0.6},
-                         {'population_size': 80, 'mutation_probability': 0.05, 'crossover_probability': 0.6},
-                         {'population_size': 100, 'mutation_probability':0.05, 'crossover_probability': 0.6}]
+    experiment_params = [{'population_size': 15, 'mutation_probability':0.1, 'crossover_probability': 0.5},
+                         {'population_size': 15, 'mutation_probability':0.1, 'crossover_probability': 0.5},
+                         {'population_size': 15, 'mutation_probability':0.05, 'crossover_probability': 0.5},
+                         {'population_size': 15, 'mutation_probability':0.05, 'crossover_probability': 0.5},
+                         {'population_size': 15, 'mutation_probability': 0.1, 'crossover_probability': 0.6},
+                         {'population_size': 15, 'mutation_probability': 0.1, 'crossover_probability': 0.6},
+                         {'population_size': 15, 'mutation_probability': 0.05, 'crossover_probability': 0.6},
+                         {'population_size': 15, 'mutation_probability':0.05, 'crossover_probability': 0.6}]
 
     all_results = []
     all_reports = []
-    for i in experiment_stores:
+    for i in range(len(experiment_stores)):
+        n = experiment_stores[i]
         store_results = []
         store_reports = []
         best_result = 0
@@ -155,7 +156,7 @@ def experiment_ga():
         for j in range(len(experiment_params)):
             model_results = []
             model_report = []
-            for k in range(experiment_stores[i]):
+            for k in range(n):
                 algorithm_param['population_size'] = experiment_params[j]['population_size']
                 algorithm_param['mutation_probability'] = experiment_params[j]['mutation_probability']
                 algorithm_param['crossover_probability'] = experiment_params[j]['crossover_probability']
