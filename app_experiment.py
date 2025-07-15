@@ -25,9 +25,9 @@ def experiment_ga():
     lead_time_min = 1
 
     #service level 服务满足率
-    asl =95
+    asl = 95
 
-    kk =0
+    kk = 0
 
     if not 0<asl<100: #data validation on ASL
         while kk == 0:
@@ -134,10 +134,8 @@ def experiment_ga():
                     'crossover_type':'uniform',
                     'max_iteration_without_improv':200}
 
-    model_results = []
-    model_report = []
-
     experiment_stores = [3,5,8,10]
+    experiment_stores_best_result_param_indexs = []
     experiment_params = [{'population_size': 80, 'mutation_probability':0.1, 'crossover_probability': 0.5},
                          {'population_size': 100, 'mutation_probability':0.1, 'crossover_probability': 0.5},
                          {'population_size': 80, 'mutation_probability':0.05, 'crossover_probability': 0.5},
@@ -147,10 +145,20 @@ def experiment_ga():
                          {'population_size': 80, 'mutation_probability': 0.05, 'crossover_probability': 0.6},
                          {'population_size': 100, 'mutation_probability':0.05, 'crossover_probability': 0.6}]
 
+    all_results = []
+    all_reports = []
     for i in experiment_stores:
+        store_results = []
+        store_reports = []
+        best_result = 0
+        best_result_index = 0
         for j in range(len(experiment_params)):
-            for k in experiment_stores[i]:
-                algorithm_param['population_size'] = experiment_params
+            model_results = []
+            model_report = []
+            for k in range(experiment_stores[i]):
+                algorithm_param['population_size'] = experiment_params[j]['population_size']
+                algorithm_param['mutation_probability'] = experiment_params[j]['mutation_probability']
+                algorithm_param['crossover_probability'] = experiment_params[j]['crossover_probability']
                 model = ga(function=stoch_inv_sim,dimension=2,variable_type='real',variable_boundaries=varbound,algorithm_parameters=algorithm_param, convergence_curve=False)
                 model.run()
 
@@ -160,15 +168,42 @@ def experiment_ga():
                 #print(np.array(model.report))
                 model_report.append(np.array(model.report))
 
-        model_report_sum = [sum(x) for x in zip(*model_report)]
+            model_report_sum = [sum(x) for x in zip(*model_report)]
+            model_result_sum = np.sum(model_results,axis=0)
+            store_results.append(model_result_sum)
+            store_reports.append(model_report_sum)
+            if best_result > model_result_sum:
+                best_result = model_result_sum
+                best_result_index = j
+        # print(model_report_sum)
+        # plt.plot(model_report_sum)
+        # plt.xlabel('Iteration')
+        # plt.ylabel('Objective function Sum')
+        # plt.title('Genetic Algorithm')
+        # plt.show()show
+        experiment_stores_best_result_param_indexs.append(best_result_index)
+        all_results.append(store_results)
+        all_reports.append(store_reports)
 
-        print(model_report_sum)
-        plt.plot(model_report_sum)
-        plt.xlabel('Iteration')
-        plt.ylabel('Objective function Sum')
-        plt.title('Genetic Algorithm')
-        plt.show()
+    print("All Results:")
+    print(all_results)
+    print("All Reports:")
+    print(all_reports)
 
+    #保存图片
+    for i in experiment_stores:
+        best_report = all_reports[experiment_stores_best_result_param_indexs[i]]
+        plt.plot(best_report)
+        plt.xlabel('迭代次数')
+        plt.ylabel('目标值')
+        experiment_param = experiment_params[experiment_stores_best_result_param_indexs[i]]
+
+        params = f'n={i},ps={experiment_param["population_size"]},mp={experiment_param["mutation_probability"]},cp={experiment_param["crossover_probability"]}'
+        plt.title(params)
+        plt.savefig(params + '.svg', format='svg', bbox_inches='tight', transparent=True)
+
+        best_report_arr = np.array(best_report)
+        np.savetxt(f"{params}.csv", best_report_arr.reshape(-1, 1), delimiter=",")  # 保存
 
 if __name__ == '__main__':
 
