@@ -19,7 +19,7 @@ arr=[2927.9375457565484,3055.8750915130963,3183.8126372696447,3311.750183026193]
 def experiment_ga():
 
     #print(int_features[2])
-    
+    penalty = False
     days = 1
     demand_mean = arr[days-1]/30
     # print(df[1][0])
@@ -63,7 +63,6 @@ def experiment_ga():
             order_qty = X[0]
             reorder_pt = X[1]
 
-
             for i in range(days):
 
                 if i == 0:
@@ -84,9 +83,7 @@ def experiment_ga():
                 else:
                     end_inv = 0
                 inv.append(0.5*stock_open+0.5*end_inv)     #storing the average of opening stock and ending inventory as cycle inventory
-                
-                
-                    
+
                 if i==0:
                     pipeline_inv = 0
                 else:
@@ -107,7 +104,10 @@ def experiment_ga():
             cycle_inv = cycle_inv/len(inv)
             
             if tot_sales*100/(tot_demand+0.000001) <asl:
-                aa = cycle_inv+10000000*demand_mean*(tot_demand-tot_sales)  #Imposing a penatly when ASL is not met the requirement            
+                if penalty:
+                    aa = cycle_inv+10000000*demand_mean*(tot_demand-tot_sales)#Imposing a penatly when ASL is not met the requirement
+                else:
+                    aa = cycle_inv + demand_mean*(tot_demand-tot_sales)
             else:
                 aa = cycle_inv
                 
