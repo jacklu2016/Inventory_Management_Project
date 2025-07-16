@@ -136,14 +136,14 @@ def experiment_ga():
 
     experiment_stores = [3,5,8,10]
     experiment_stores_best_result_param_indexs = []
-    experiment_params = [{'population_size': 15, 'mutation_probability':0.1, 'crossover_probability': 0.5},
-                         {'population_size': 15, 'mutation_probability':0.1, 'crossover_probability': 0.5},
-                         {'population_size': 15, 'mutation_probability':0.05, 'crossover_probability': 0.5},
-                         {'population_size': 15, 'mutation_probability':0.05, 'crossover_probability': 0.5},
-                         {'population_size': 15, 'mutation_probability': 0.1, 'crossover_probability': 0.6},
-                         {'population_size': 15, 'mutation_probability': 0.1, 'crossover_probability': 0.6},
-                         {'population_size': 15, 'mutation_probability': 0.05, 'crossover_probability': 0.6},
-                         {'population_size': 15, 'mutation_probability':0.05, 'crossover_probability': 0.6}]
+    experiment_params = [{'population_size': 50, 'mutation_probability':0.1, 'crossover_probability': 0.5},
+                         {'population_size': 80, 'mutation_probability':0.1, 'crossover_probability': 0.5},
+                         {'population_size': 50, 'mutation_probability':0.05, 'crossover_probability': 0.5},
+                         {'population_size': 80, 'mutation_probability':0.05, 'crossover_probability': 0.5},
+                         {'population_size': 50, 'mutation_probability': 0.1, 'crossover_probability': 0.6},
+                         {'population_size': 80, 'mutation_probability': 0.1, 'crossover_probability': 0.6},
+                         {'population_size': 50, 'mutation_probability': 0.05, 'crossover_probability': 0.6},
+                         {'population_size': 80, 'mutation_probability':0.05, 'crossover_probability': 0.6}]
 
     all_results = []
     all_reports = []
@@ -192,14 +192,16 @@ def experiment_ga():
     print(all_reports)
 
     #保存图片
-    for i in experiment_stores:
-        best_report = all_reports[experiment_stores_best_result_param_indexs[i]]
+    for i in range(len(experiment_stores)):
+        best_report = all_reports[i][experiment_stores_best_result_param_indexs[i]]
+        print(best_report)
+        plt.clf()  # 清除当前 figure 的所有内容
         plt.plot(best_report)
         plt.xlabel('迭代次数')
         plt.ylabel('目标值')
         experiment_param = experiment_params[experiment_stores_best_result_param_indexs[i]]
 
-        params = f'n={i},ps={experiment_param["population_size"]},mp={experiment_param["mutation_probability"]},cp={experiment_param["crossover_probability"]}'
+        params = f'n={experiment_stores[i]},ps={experiment_param["population_size"]},mp={experiment_param["mutation_probability"]},cp={experiment_param["crossover_probability"]}'
         plt.title(params)
         plt.savefig(params + '.svg', format='svg', bbox_inches='tight', transparent=True)
 
