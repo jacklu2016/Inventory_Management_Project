@@ -5,10 +5,14 @@ import random
 import matplotlib
 matplotlib.use('TkAgg')  # 或 'QtAgg', 'Qt5Agg'
 
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
+import matplotlib
 
+# 设置中文字体（Windows 示例，SimHei = 黑体）
+matplotlib.rcParams['font.family'] = 'SimHei'
 
-
+# 避免负号显示为乱码
+matplotlib.rcParams['axes.unicode_minus'] = False
 
 arr=[2927.9375457565484,3055.8750915130963,3183.8126372696447,3311.750183026193]
 
@@ -147,24 +151,30 @@ def experiment_ga():
 
     all_results = []
     all_reports = []
+    all_variables = []
     for i in range(len(experiment_stores)):
         n = experiment_stores[i]
         store_results = []
         store_reports = []
-        best_result = 0
+        store_variables = []
+        best_result = 100000000
         best_result_index = 0
         for j in range(len(experiment_params)):
             model_results = []
             model_report = []
+            model_variable = []
             for k in range(n):
-                algorithm_param['population_size'] = experiment_params[j]['population_size']
+                #algorithm_param['population_size'] = experiment_params[j]['population_size']
+                algorithm_param['population_size'] = 10
                 algorithm_param['mutation_probability'] = experiment_params[j]['mutation_probability']
                 algorithm_param['crossover_probability'] = experiment_params[j]['crossover_probability']
+                print(algorithm_param)
                 model = ga(function=stoch_inv_sim,dimension=2,variable_type='real',variable_boundaries=varbound,algorithm_parameters=algorithm_param, convergence_curve=False)
                 model.run()
 
                 temp=min(model.report)
                 model_results.append(temp)
+                model_variable.append(model.best_variable)
                 print(temp)
                 #print(np.array(model.report))
                 model_report.append(np.array(model.report))
@@ -173,6 +183,7 @@ def experiment_ga():
             model_result_sum = np.sum(model_results,axis=0)
             store_results.append(model_result_sum)
             store_reports.append(model_report_sum)
+            store_variables.append(model_variable)
             if best_result > model_result_sum:
                 best_result = model_result_sum
                 best_result_index = j
@@ -185,9 +196,16 @@ def experiment_ga():
         experiment_stores_best_result_param_indexs.append(best_result_index)
         all_results.append(store_results)
         all_reports.append(store_reports)
+        all_variables.append(store_variables)
 
     print("All Results:")
     print(all_results)
+    import pandas as pd
+    df = pd.DataFrame(all_results)
+    df.to_csv("all_results.csv", index=False, header=False)  # 不保存行号和列名
+
+    df1 = pd.DataFrame(all_variables)
+    df1.to_csv("best_variables.csv", index=False, header=False)  # 不保存行号和列名
     print("All Reports:")
     print(all_reports)
 
@@ -209,6 +227,4 @@ def experiment_ga():
         np.savetxt(f"{params}.csv", best_report_arr.reshape(-1, 1), delimiter=",")  # 保存
 
 if __name__ == '__main__':
-
-
     experiment_ga()
