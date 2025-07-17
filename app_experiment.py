@@ -92,7 +92,7 @@ def experiment_ga():
                 if pipeline_inv + end_inv <= reorder_pt:
                     if i+lead_time <days:
                         in_qty[i+lead_time] = in_qty[i+lead_time]+order_qty   #ordering new stock and adding to the incoming inventory list
-                
+                        #obj += order_qty #计算成本，1个订单单位成本1
                 if i>=2*lead_time_max:                            #the start of simulation performance monitoring
                     tot_sales = tot_sales + stock_open - end_inv  #total sales during the simulation length
                     tot_demand = tot_demand + demand              #total demand during the simulation length
@@ -101,13 +101,15 @@ def experiment_ga():
             cycle_inv = 0
             for n in range(len(inv)):
                 cycle_inv = cycle_inv + inv[n]              #calculating the averge cycle inventory
-            cycle_inv = cycle_inv/len(inv)
+            #cycle_inv = cycle_inv/len(inv)
+            #obj += cycle_inv * 0.3 #库存单位成本时0.3
+
             
             if tot_sales*100/(tot_demand+0.000001) <asl:
                 if penalty:
-                    aa = cycle_inv+10000000*demand_mean*(tot_demand-tot_sales)#Imposing a penatly when ASL is not met the requirement
+                    aa = cycle_inv+ 3 * (tot_demand-tot_sales)#Imposing a penatly when ASL is not met the requirement
                 else:
-                    aa = cycle_inv + demand_mean*(tot_demand-tot_sales)
+                    aa = cycle_inv + (tot_demand-tot_sales)
             else:
                 aa = cycle_inv
                 
@@ -164,8 +166,8 @@ def experiment_ga():
             model_report = []
             model_variable = []
             for k in range(n):
-                #algorithm_param['population_size'] = experiment_params[j]['population_size']
-                algorithm_param['population_size'] = 10
+                algorithm_param['population_size'] = experiment_params[j]['population_size']
+                #algorithm_param['population_size'] = 10
                 algorithm_param['mutation_probability'] = experiment_params[j]['mutation_probability']
                 algorithm_param['crossover_probability'] = experiment_params[j]['crossover_probability']
                 print(algorithm_param)
