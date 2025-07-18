@@ -8,21 +8,32 @@ result_df = pd.read_csv('all_results.csv', header=None)
 # 默认列编号为 0，所以我们访问 df[0]
 #df[0] = df[0].apply(ast.literal_eval)  # 字符串转为列表
 
-df[0] = df[0].apply(lambda x: eval(x, {'array': np.array}))  # 列表中每个元素转为 numpy.array
+#df[0] = df[0].apply(lambda x: eval(x, {'array': np.array}))  # 列表中每个元素转为 numpy.array
 
 #print(result_df)
+
+table_df = pd.DataFrame({
+    '0': [],
+    '1': [],
+    '2': [],
+    '3': []
+})
+
 for col in df:
     #print(col)
     col_data = df[col]
-    for i in range(len(df[0])):
-        data = df[0][i]
+    #print(col_data)
+    col_data = col_data.apply(lambda x: eval(x, {'array': np.array}))  # 列表中每个元素转为 numpy.array
+    for i in range(len(col_data)):
+        data = col_data[i]
         result = [list(x) for x in zip(*data)]
-        formatted = "[" + ",\n ".join(
+        formatted = ";".join(
             "[" + ",".join(f"{x:.0f}" for x in row) + "]" for row in result
-        ) + "]"
-
+        ) + f";{result_df[col][i]:.0f}"
+        # print(result)
+        # print(result_df[col][i])
+        table_df.loc[col, str(i)] = formatted
         print(formatted)
-        print('fitvalue:')
-        print(f"{result_df[col][i]:.0f}")
-    print('===========================')
+    #print('===========================')
     #print(np.array2string(result, precision=0, separator=", ", suppress_small=True))
+table_df.to_csv('best_variables_group.csv')
