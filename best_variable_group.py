@@ -3,8 +3,8 @@ import ast
 import numpy as np
 
 # 假设 CSV 文件中每一行都是一个字符串形式的数组列表，没有列名
-df = pd.read_csv('best_variables.csv', header=None)
-result_df = pd.read_csv('all_results.csv', header=None)
+df = pd.read_csv('best_variables_penalty_True.csv', header=None)
+result_df = pd.read_csv('all_results_penalty_True.csv', header=None)
 # 默认列编号为 0，所以我们访问 df[0]
 #df[0] = df[0].apply(ast.literal_eval)  # 字符串转为列表
 
@@ -36,4 +36,4 @@ for col in df:
         print(formatted)
     #print('===========================')
     #print(np.array2string(result, precision=0, separator=", ", suppress_small=True))
-table_df.to_csv('best_variables_group.csv')
+table_df.to_csv('best_variables_group_penalty_True.csv')
