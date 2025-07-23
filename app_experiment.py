@@ -19,7 +19,7 @@ arr=[2927.9375457565484,3055.8750915130963,3183.8126372696447,3311.750183026193]
 def experiment_ga():
 
     #print(int_features[2])
-    penalty = False
+    penalty = True
     days = 1
     demand_mean = arr[days-1]/30
     # print(df[1][0])
@@ -114,7 +114,6 @@ def experiment_ga():
                 aa = cycle_inv
                 
             obj = obj + aa      #objective function i.e. cycle inventory calculation
-            
 
         return obj/10
 
@@ -204,10 +203,10 @@ def experiment_ga():
     print(all_results)
     import pandas as pd
     df = pd.DataFrame(all_results)
-    df.to_csv("all_results.csv", index=False, header=False)  # 不保存行号和列名
+    df.to_csv(f"all_results_penalty_{penalty}.csv", index=False, header=False)  # 不保存行号和列名
 
     df1 = pd.DataFrame(all_variables)
-    df1.to_csv("best_variables.csv", index=False, header=False)  # 不保存行号和列名
+    df1.to_csv(f"best_variables_penalty_{penalty}.csv", index=False, header=False)  # 不保存行号和列名
     print("All Reports:")
     print(all_reports)
 
@@ -226,7 +225,7 @@ def experiment_ga():
         plt.savefig(params + '.svg', format='svg', bbox_inches='tight', transparent=True)
 
         best_report_arr = np.array(best_report)
-        np.savetxt(f"{params}.csv", best_report_arr.reshape(-1, 1), delimiter=",")  # 保存
+        np.savetxt(f"{params}_penalty_{penalty}.csv", best_report_arr.reshape(-1, 1), delimiter=",")  # 保存
 
 if __name__ == '__main__':
     experiment_ga()
