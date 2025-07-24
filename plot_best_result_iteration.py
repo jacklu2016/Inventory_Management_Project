@@ -24,8 +24,15 @@ for i in range(4):
     ax_row = i // 2
     ax_col = i % 2
     #real_data.index = real_data.index - pd.Timedelta(days=1329)
-    df = pd.read_csv(algos[i]['name'] + f'_penalty_{penalty}.csv')
-    ax[ax_row, ax_col].plot(df.iloc[:, 0], color='#005BAA')
+    if penalty:
+        df = pd.read_csv(algos[i]['name'] + f'_penalty_{penalty}.csv')
+    else:
+        df = pd.read_csv(algos[i]['name'] + '.csv')
+
+    if penalty:
+        ax[ax_row, ax_col].plot(df.iloc[:, 0] * 6.203980766, color='#005BAA')
+    else:
+        ax[ax_row, ax_col].plot(df.iloc[:, 0] * 5.533864377, color='#005BAA')
 
     ax[ax_row, ax_col].legend()
     #ax[ax_row, ax_col].grid(False)
